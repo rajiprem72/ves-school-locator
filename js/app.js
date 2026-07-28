@@ -1,4 +1,5 @@
 // Create Map
+alert("app.js loaded");
 const map = L.map('map').setView([13.0827, 80.2707], 10);
 
 // OpenStreetMap
