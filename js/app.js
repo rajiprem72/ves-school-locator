@@ -9,11 +9,15 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 // Load JSON
-fetch('data/schools.json')
-    .then(response => response.json())
-    .then(schools => {
-
-        console.log(schools);
-
+fetch("data/schools.json")
+    .then(response => {
+        console.log("Status:", response.status);
+        return response.json();
     })
-    .catch(error => console.error(error));
+    .then(data => {
+        console.log("Schools Loaded:", data.length);
+        console.log(data);
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
