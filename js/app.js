@@ -10,14 +10,19 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 // Load JSON
 fetch("data/schools.json")
-    .then(response => {
-        console.log("Status:", response.status);
-        return response.json();
+    .then(response => response.json())
+    .then(schools => {
+
+        schools.forEach(school => {
+
+            L.marker([school.latitude, school.longitude])
+                .addTo(map)
+                .bindPopup(`
+                    <b>${school.name}</b><br>
+                    ${school.address}
+                `);
+
+        });
+
     })
-    .then(data => {
-        console.log("Schools Loaded:", data.length);
-        console.log(data);
-    })
-    .catch(error => {
-        console.error("Error:", error);
-    });
+    .catch(error => console.error(error));
