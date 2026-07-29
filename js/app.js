@@ -92,5 +92,15 @@ fetch("data/schools.json")
         schoolList.appendChild(card);
 
     });
+        card.onclick = function() {
 
+            map.flyTo(...);
+        
+            marker.openPopup();
+        
+        };
+        
+        schoolList.appendChild(card);
+        
+        });
 });
