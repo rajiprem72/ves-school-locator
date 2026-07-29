@@ -111,3 +111,37 @@ header{
     font-size:14px;
 
 }
+
+.clickable{
+
+    cursor:pointer;
+
+}
+
+.clickable:hover{
+
+    color:#0066cc;
+
+    text-decoration:underline;
+
+}
+
+.school-contact{
+
+    margin-top:8px;
+
+}
+
+.school-contact a{
+
+    color:#0066cc;
+
+    text-decoration:none;
+
+}
+
+.school-contact a:hover{
+
+    text-decoration:underline;
+
+}
