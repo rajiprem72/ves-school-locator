@@ -78,53 +78,131 @@ function loadSchools(schools) {
 
         card.className = "school-card";
 
+        
         card.innerHTML = `
 
-            <div class="school-name">
+<div class="school-name clickable">
 
-                ${school.name}
+    🏫 ${school.name}
 
-            </div>
+</div>
 
-            <div class="school-address">
+<div class="school-address clickable">
 
-                ${school.address}
+    📍 ${school.address}
 
-            </div>
+</div>
 
-            <div class="school-contact">
+${
+school.phone && school.phone.length
+?
+`
+<div class="school-contact">
 
-                ☎ ${school.phone.join("<br>☎ ")}
+${school.phone.map(phone=>`
 
-            </div>
+<div>
 
-        `;
+<a href="tel:${phone.replace(/[^0-9+]/g,'')}">
 
+📞 ${phone}
+
+</a>
+
+</div>
+
+`).join("")}
+
+</div>
+`
+:
+""
+}
+
+${
+school.email
+?
+`
+<div class="school-contact">
+
+<a href="mailto:${school.email}">
+
+✉ ${school.email}
+
+</a>
+
+</div>
+`
+:
+""
+}
+
+${
+school.website
+?
+`
+<div class="school-contact">
+
+<a href="${school.website}"
+
+target="_blank"
+
+rel="noopener noreferrer">
+
+🌐 Visit Website
+
+</a>
+
+</div>
+`
+:
+""
+}
+
+<div class="school-contact">
+
+<a href="https://www.google.com/maps/dir/?api=1&destination=${school.latitude},${school.longitude}"
+
+target="_blank">
+
+🧭 Directions
+
+</a>
+
+</div>
+
+`;    
         //------------------------------------------------
         // Card Click
         //------------------------------------------------
 
-        card.addEventListener("click", function () {
+       function showSchool(){
 
-            map.flyTo(
-                [school.latitude, school.longitude],
-                16,
-                {
-                    animate: true,
-                    duration: 1.5
-                }
-            );
+    map.flyTo(
 
-            marker.openPopup();
+        [school.latitude,school.longitude],
 
-        });
+        16,
 
-        schoolList.appendChild(card);
+        {
 
-    });
+            animate:true,
+
+            duration:1.5
+
+        }
+
+    );
+
+    marker.openPopup();
 
 }
 
+card.querySelector(".school-name")
+.addEventListener("click",showSchool);
+
+card.querySelector(".school-address")
+.addEventListener("click",showSchool);
 // =====================================================
 // Live Search
 // =====================================================
