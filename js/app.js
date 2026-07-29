@@ -1,49 +1,84 @@
+// =====================================================
+// VES School Locator
+// Version 2.0
+// app.js
+// =====================================================
+
+// -----------------------------------------------------
 // Create Map
+// -----------------------------------------------------
 
-const map=L.map('map').setView([13.0827,80.2707],10);
+const map = L.map('map').setView([13.0827, 80.2707], 10);
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
-
-    maxZoom:19,
-
-    attribution:'© OpenStreetMap'
-
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap'
 }).addTo(map);
 
-let markerList=[];
+// -----------------------------------------------------
+// Variables
+// -----------------------------------------------------
+
+let schoolsData = [];
+let markers = [];
+
+// -----------------------------------------------------
+// Load Schools
+// -----------------------------------------------------
 
 fetch("data/schools.json")
+    .then(response => response.json())
+    .then(schools => {
 
-.then(res=>res.json())
+        schoolsData = schools;
 
-.then(schools=>{
+        loadSchools(schools);
 
-    const schoolList=document.getElementById("schoolList");
+    })
+    .catch(error => console.error(error));
 
-    schools.forEach(school=>{
 
-        const marker=L.marker([
+// =====================================================
+// Display Schools
+// =====================================================
+
+function loadSchools(schools) {
+
+    const schoolList = document.getElementById("schoolList");
+
+    schoolList.innerHTML = "";
+
+    markers.forEach(marker => map.removeLayer(marker));
+
+    markers = [];
+
+    schools.forEach((school) => {
+
+        //------------------------------------------------
+        // Marker
+        //------------------------------------------------
+
+        const marker = L.marker([
             school.latitude,
             school.longitude
         ])
-
         .addTo(map)
+        .bindPopup(`
+            <b>${school.name}</b><br>
+            ${school.address}
+        `);
 
-        .bindPopup(
+        markers.push(marker);
 
-            `<b>${school.name}</b><br>${school.address}`
+        //------------------------------------------------
+        // Card
+        //------------------------------------------------
 
-        );
+        const card = document.createElement("div");
 
-        markerList.push(marker);
+        card.className = "school-card";
 
-        //--------------------------------------------------
-
-        const card=document.createElement("div");
-
-        card.className="school-card";
-
-        card.innerHTML=`
+        card.innerHTML = `
 
             <div class="school-name">
 
@@ -65,42 +100,58 @@ fetch("data/schools.json")
 
         `;
 
-        //--------------------------------------------------
+        //------------------------------------------------
+        // Card Click
+        //------------------------------------------------
 
-        card.onclick=function(){
+        card.addEventListener("click", function () {
 
             map.flyTo(
-
-                [school.latitude,school.longitude],
-
+                [school.latitude, school.longitude],
                 16,
-
                 {
-
-                    animate:true,
-
-                    duration:1.5
-
+                    animate: true,
+                    duration: 1.5
                 }
-
             );
 
             marker.openPopup();
 
-        };
+        });
 
         schoolList.appendChild(card);
 
     });
-        card.onclick = function() {
 
-            map.flyTo(...);
-        
-            marker.openPopup();
-        
-        };
-        
-        schoolList.appendChild(card);
-        
-        });
+}
+
+// =====================================================
+// Live Search
+// =====================================================
+
+const searchBox = document.getElementById("searchBox");
+
+searchBox.addEventListener("keyup", function () {
+
+    const keyword = this.value.toLowerCase().trim();
+
+    if (keyword === "") {
+
+        loadSchools(schoolsData);
+
+        return;
+
+    }
+
+    const filtered = schoolsData.filter(school => {
+
+        return (
+            school.name.toLowerCase().includes(keyword) ||
+            school.address.toLowerCase().includes(keyword)
+        );
+
+    });
+
+    loadSchools(filtered);
+
 });
